@@ -4,9 +4,9 @@ The interface will rely on toggling between layers using the touch screen. The t
 
 ## Image Layer
 
-![Draft showing current ideas for buttons, slider, and screen for image layer.](https://github.com/abigailmcgovern/naparislidedeck/blob/main/roadmap_media/image_layer_draft.png)
+![Draft showing current ideas for buttons, slider, and screen for image layer.](https:/github.com/AbigailMcGovern/naparistreamdeck/blob/main/roadmap_media/image_layer_draft.png)
 
 
 ## Labels Layer
 
-![Draft showing current ideas for buttons, slider, and screen for labels layer.](https://github.com/abigailmcgovern/naparislidedeck/blob/main/roadmap_media/image_layer_draft.png)
+![Draft showing current ideas for buttons, slider, and screen for labels layer.](https:/github.com/AbigailMcGovern/naparistreamdeck/blob/main/roadmap_media/labels_layer_draft.png)
