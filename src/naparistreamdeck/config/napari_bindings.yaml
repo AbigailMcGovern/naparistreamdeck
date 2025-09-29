@@ -1,0 +1,39 @@
+name: napari bindings
+app name: napari
+description: napari bindings for streamdeck
+key binds:
+  viewer_menu: 
+    - button_id: 0  
+      action_id: napari:viewer:
+    - button_id: 1  
+      action_id: napari:viewer:
+    - button_id: 2  
+      action_id: napari:viewer:
+    - button_id: 3  
+      action_id: napari:viewer:
+    - button_id: 4  
+      action_id: napari:viewer:
+    - button_id: 5  
+      action_id: napari:viewer:
+    - button_id: 6  
+      action_id: napari:viewer:
+    - button_id: 7  
+      action_id: napari:viewer:
+  labels_menu: 
+    - button_id: 0  
+      action_id: napari:layer:
+    - button_id: 1  
+      action_id: napari:layer:
+    - button_id: 2  
+      action_id: napari:layer:
+    - button_id: 3  
+      action_id: napari:layer:
+    - button_id: 4  
+      action_id: napari:layer:
+    - button_id: 5  
+      action_id: napari:layer:
+    - button_id: 6  
+      action_id: napari:layer:
+    - button_id: 7  
+      action_id: napari:layer:
+

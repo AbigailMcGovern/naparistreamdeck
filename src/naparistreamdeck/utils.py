@@ -1,6 +1,9 @@
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
+# ---------
+# Resources
+# ---------
 
 resource_dict = {
     'colourpicker_on' : 'colourpicker_icon_on.png', # 66 x 66 px
@@ -49,6 +52,8 @@ def read_resource(name):
     return img
 
 
+
+# unneccessary
 def check_for_multidial(dial):
     if dial == 'edit_dimensions':
         multidial = {
@@ -63,3 +68,4 @@ def check_for_multidial(dial):
 
     else:
         multidial = False
+
