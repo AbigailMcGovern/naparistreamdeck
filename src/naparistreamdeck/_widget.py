@@ -44,6 +44,9 @@ if TYPE_CHECKING:
 
 @magic_factory(auto_call=True)
 def activate_bindings(viewer: napari.Viewer):
+    """
+    Activate the suite of menus and actions built for the 
+    """
     pass
 
 
