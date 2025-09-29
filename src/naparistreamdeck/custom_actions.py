@@ -44,7 +44,27 @@ from napari.viewer import Viewer
 # Viewer
 # ------
 
-def toggle_2d_3d(ll: LayerList) -> None:
+def toggle_2d_3d(v: Viewer) -> None:
+    pass
+
+
+def change_axis_order(v: Viewer) -> None:
+    pass
+
+
+def transpose_visible_axis(v: Viewer) -> None:
+    pass
+
+
+def toggle_grid(v: Viewer) -> None:
+    pass
+
+
+def restore_default_view(v: Viewer) -> None:
+    pass
+
+
+def show_terminal(v: Viewer) -> None:
     pass
 
 
@@ -74,6 +94,36 @@ CUSTOM_ACTIONS = [
         id='napari:viewer:toggle_2d_3d', 
         title='toggle between 2D and 3D camera views',
         callback=toggle_2d_3d
-    )
+    ), 
+
+    Action(
+        id='napari:viewer:change_axis_order', 
+        title='change order of visible axes',
+        callback=change_axis_order
+    ), 
+
+    Action(
+        id='napari:viewer:transpose_visible_axis', 
+        title='transpose oreder of last two visible axes',
+        callback=transpose_visible_axis
+    ), 
+
+    Action(
+        id='napari:viewer:toggle_grid', 
+        title='toggle grid mode',
+        callback=toggle_grid
+    ), 
+
+    Action(
+        id='napari:viewer:restore_default_view', 
+        title='reset view to original state',
+        callback=restore_default_view
+    ), 
+
+    Action(
+        id='napari:viewer:show_terminal', 
+        title='toggle show Python terminal',
+        callback=show_terminal
+    ), 
 
 ]
