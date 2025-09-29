@@ -1,0 +1,5 @@
+- dial should move axis along when not in dial mode
+- layer and viewer controls in different menus 
+- perhaps dedicated button to switch between control pages then show buttons for viewer, single layer, layer list, dims, camera
+- thin axis sliders always visible
+- labels layer most important
