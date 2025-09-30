@@ -1,0 +1,38 @@
+# settings describing dial sensitivity for different settings
+# increment = how much to increment setting per +/-1 on dial movement
+# upper_limit and lower_limit are limits for dial values
+# options_list = categorical options
+#TODO: test and adjust settings to optimise haptics
+name: napari bindings
+app name: napari
+description: dial settings for napari streamdeck
+settings:
+# general
+- value: opacity
+  upper_limit: 1.0
+  lower_limit: 0.0
+  increment: 0.02
+- value: blending
+  upper_limit: 2
+  lower_limit: 0
+  options_list: ["opaque", "translucent", "additive"]
+  increment: 0.2 # five ticks per transition
+# Labels
+- value: label
+  upper_limit: False 
+  lower_limit: 0
+  increment: 1
+- value: brush_size
+  upper_limit: 40 
+  lower_limit: 1
+  increment: 0.5 # two ticks per increment
+- value: contour
+  upper_limit: False 
+  lower_limit: 0
+  increment: 0.2 
+# Image
+- value: colourmap
+  upper_limit: 2
+  lower_limit: 0
+  options_list: ["opaque", "translucent", "additive"]
+  increment: 0.2 # 5 ticks per transition

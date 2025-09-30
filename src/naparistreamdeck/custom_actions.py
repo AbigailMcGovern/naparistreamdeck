@@ -23,6 +23,10 @@ from napari.viewer import Viewer
 # Lables
 # ------
 
+def labels_opacity(l: Labels) -> None:
+    l.opacity
+
+
 # Image
 # -----
 
@@ -71,6 +75,25 @@ def show_terminal(v: Viewer) -> None:
 # Lables
 # ------
 
+def labels_pan_zoom(l: Labels) -> None:
+    l.mode = "PAN_ZOOM"
+
+
+def labels_pick(l: Labels) -> None:
+    l.mode = "PICK"
+
+
+def labels_paint(l: Labels) -> None:
+    l.mode = "PAINT"
+
+
+def labels_fill(l: Labels) -> None:
+    l.mode = "FILL"
+
+
+def labels_erase(l: Labels) -> None:
+    l.mode = "ERASE"
+
 # Image
 # -----
 
@@ -89,7 +112,33 @@ def show_terminal(v: Viewer) -> None:
 # --------------
 
 CUSTOM_ACTIONS = [
+    
+    # Labels keys
+    Action(
+        id='napari:labels:pan_zoom', 
+        title='select pan zoom mode on labels layer',
+        callback=labels_pan_zoom
+    ), 
 
+     Action(
+        id='napari:labels:pick', 
+        title='select pick mode on labels layer',
+        callback=labels_pick
+    ), 
+
+     Action(
+        id='napari:labels:erase', 
+        title='select erase mode on labels layer',
+        callback=labels_erase
+    ), 
+
+     Action(
+        id='napari:labels:paint', 
+        title='select paint mode on labels layer',
+        callback=labels_paint
+    ), 
+
+    # Viewer keys
     Action(
         id='napari:viewer:toggle_2d_3d', 
         title='toggle between 2D and 3D camera views',
