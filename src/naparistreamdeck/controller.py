@@ -104,19 +104,19 @@ class BoundController:
         # setup page settings
         # -------------------
         self.remember_page = remember_page
-        self._current_layer_page = 0 # page on touch screen for layer icons (layer_view = True)
         self._add_page_info()
         self._set_active_menu() # assigns keys to active layer
         self._active_keys = None 
         self._set_active_keys() # assign _active_keys
         self._active_dials = None
         self._set_active_dials() # assign _active_dials
-        self._visible_layers = None
-        # assign _visible_layers
-        
+        self._touchscreen_layer_info = None
+        self._update_layer_list_info() # assign _touchscreen_layer_info
 
         # Setup streamdeck display
         # ------------------------
+        self._update_keys()
+        self._update_touchscreen()
 
 
     # ------------------
@@ -212,8 +212,23 @@ class BoundController:
 
     
     def _update_layer_list_info(self):
-        pass
-        
+        # layers - pageified 
+        # thumbnails
+        # current page
+        # 800 pixels wide fyi
+        active_layer = self.viewer.selection.active.name
+        ll =  self.viewer.layers
+        n_pages = np.ceil(ll / 7).astype(int)
+        layer_info = {i: [] for i in range(n_pages)}
+        active_info = {}
+        for i, l in enumerate(ll):
+            page = np.floor(i / 7).astype(int)
+            layer_info[page].append(l.thumbnail)
+            if l.name == active_layer:
+                active_info['page'] = page # 7 layers to display thumbnails for
+                active_info['i'] = i % 7 # gives info for indexing onto page of 7 - needed for diplaying selected
+        layer_info['active'] = active_info
+        self._touchscreen_layer_info = layer_info
         
             
 
@@ -224,7 +239,7 @@ class BoundController:
     def _update_keys(self):
         for k in self._active_keys:
             with self.deck:
-                on = self.viewer.layers.selection[0].mode == k['value']
+                on = self.viewer.layers.selection.active.mode == k['value']
                 if on:
                     self.deck.set_key_image(k['key_id'], k['icon_on'])
                 else:
