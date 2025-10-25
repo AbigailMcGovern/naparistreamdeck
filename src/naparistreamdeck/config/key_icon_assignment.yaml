@@ -1,0 +1,26 @@
+#
+name: napari bindings
+app name: napari
+description: dial settings for napari streamdeck
+settings:
+# general
+  pan_zoom:
+    unselected: ".png"
+    selected: ".png"
+    toggle: True 
+  pick:
+    unselected: "colourpicker_icon.png"
+    selected: "colourpicker_icon_on.png"
+    toggle: True 
+  erase:
+    unselected: "eraser_icon.png"
+    selected: "eraser_icon_on.png"
+    toggle: True 
+  paint:
+    unselected: "paint_icon.png"
+    selected: "paint_icon_on.png"
+    toggle: True 
+  pan_zoom:
+    unselected: ""
+    selected: ""
+    toggle: True 
