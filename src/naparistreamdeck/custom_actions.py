@@ -176,3 +176,7 @@ CUSTOM_ACTIONS = [
     ), 
 
 ]
+
+def register_custom_napari_actions(app: Application) -> None:
+    for action in CUSTOM_ACTIONS:
+        app.register_action(action)

@@ -11,6 +11,8 @@ from StreamDeck.Devices.StreamDeck import StreamDeck
 import numpy as np
 from collections import defaultdict
 # from typing import Union 
+from .custom_actions import CUSTOM_ACTIONS
+from superqt.utils import ensure_main_thread
 
 
 # paths
@@ -23,6 +25,7 @@ class BoundController:
             self, 
             deck: StreamDeck, 
             viewer: Viewer, 
+            actions: list = CUSTOM_ACTIONS,
             viewer_menu: bool = False, 
             layer_view: bool = True,
             remember_page: bool = True,
@@ -36,6 +39,8 @@ class BoundController:
         deck: StreamDeck class or subclass 
             #TODO check typing logic for this might need Union?
         viewer: napari Viewer 
+        actions: list
+            custom actions
         viewer_menu: bool
             Is the key menu for the viewer currently active? Otherwise, 
             the menu applicable to the currently selected layer will be visible.
@@ -79,7 +84,7 @@ class BoundController:
         self.dial_n, self.key_n, self.bindings_n = 'dial_settings.yaml', 'key_icon_assignment.yaml', 'napari_bindings.yaml'
         self._dial_settings = open_yaml(CONFIG_PATH, self.dial_n)['settings']
         self._key_settings = open_yaml(CONFIG_PATH, self.key_n)['settings']
-        self._bindings = open_yaml(CONFIG_PATH, self.key_n)['menus']
+        self._bindings = open_yaml(CONFIG_PATH, self.bindings_n)['menus']
         # menu assignments
         self._menu_assignments = {
             Image : 'image_menu', 
@@ -97,9 +102,8 @@ class BoundController:
         self._key_media = {}
         self._get_key_media_paths() # finds icons for each possible key
             # assigns to self.key_media
-        self._key_icons = {}
-        self._load_key_icons() # loads icons into numpy arrays held under 
-            # name strs in _key_icons
+        self._load_key_icons() # loads icons into numpy arrays held in key settings
+            # self._key_settings[value]['unselected_icon'] & self._key_settings[value]['selected_icon']
 
         # setup page settings
         # -------------------
@@ -123,50 +127,24 @@ class BoundController:
     # Load configuration
     # ------------------
 
-    def _set_active_menu(self):
-        if not self.viewer_menu:
-            active = type(self.viewer.selection.active)
-            active = self._menu_assignments[active]
-        if self.viewer_menu:
-            active = 'viewer_menu'
-        self.active_menu = active
 
-
-    def _refresh_deck_display(self):
-        if not self.dial_view:
-            pass
-            # touchscreen in layerview
-        if self.dial_view:
-            pass # touchscreen in layer
-        
-        # set keys 
-        pass
-
-
-    def _get_key_media_paths(self):
-        for k in self._key_bindings:
-            value = k['value']
-            p = self._key_bindings[value].get('unselected')
-            sp = self._key_bindings[value].get('selected')
-            if p is None and sp is None:
-                m = "Please ensure for each entry under settings in resources/key_icon_assignment.yaml " \
-                "there is a filename for at least one of selected and unselected "
-                raise ValueError(m)
-            if sp is None:
-                sp = p
-            if p is None:
-                p = sp
-            self.key_media[k['key_id']] = [p, sp]
-    
 
     def _load_key_icons(self):
-        if len(self._key_media) == 0:
-            self._get_key_media_paths()
-        for v, ps in self._key_media.items():
-            icon = Image.open(ps[0])
-            icon_on = Image.open(ps[1])
-            self._key_icons[v] = [icon, icon_on]
-    
+        '''
+        Load key media into memory - since the icons are tiny this should be perfectly efficient
+        '''
+        for k in self._key_settings:
+            value = k['value']
+            up = self._key_settings[value].get('unselected')
+            up = os.path.join(ASSETS_PATH, up)
+            sp = self._key_settings[value].get('selected')
+            sp = os.path.join(ASSETS_PATH, sp)
+            u_icon = Image.open(up)
+            self._key_settings[value]['unselected_icon'] = u_icon
+            s_icon = Image.open(sp)
+            self._key_settings[value]['selected_icon'] = s_icon
+
+
 
     def _add_page_info(self):
         '''
@@ -182,9 +160,22 @@ class BoundController:
             #      [ ... 
             #           <the same stuff subdivided into list for next page>
             #        ]}
-            page_divided_bindings_info(info, menu, self, 8, 'key')
+            page_divided_bindings_info(info, menu, self, 7, 'key')
+            # N per page 7 as 8th slot is for "next page" button TODO ensure consistancy in config file
+            # TODO fix edge case (last page can have 8)
             page_divided_bindings_info(info, menu, self, 4, 'dial')
-        
+            # of course use all 4 dials - TODO swipe for next page - should be simple to define on touch pad
+
+
+    def _set_active_menu(self):
+        if not self.viewer_menu:
+            active = type(self.viewer.selection.active)
+            active = self._menu_assignments[active]
+        if self.viewer_menu:
+            active = 'viewer_menu'
+        self.active_menu = active
+
+
 
     def _set_active_keys(self):
         '''
@@ -193,7 +184,7 @@ class BoundController:
             'streamdeck:toggle_dialview', 
             'value': 'toggle_dialview'}, ...] --> len = 8
         '''
-        page = self._bindings[self.active_menu][f'current_key_page']
+        page = self._bindings[self.active_menu]['current_key_page']
         binds = self._bindings[self.active_menu]['key_binds']['page_bindings']
         self._active_keys = binds[page]
         for k in self._active_keys:
@@ -229,7 +220,27 @@ class BoundController:
                 active_info['i'] = i % 7 # gives info for indexing onto page of 7 - needed for diplaying selected
         layer_info['active'] = active_info
         self._touchscreen_layer_info = layer_info
+
+
+
+    def _set_button_values(self):
+        '''
+        Function to set initial state for napari button values
+        '''
+        # find viewer active layer
+        l = ...
+
+
+
+    def _refresh_deck_display(self):
+        if not self.dial_view:
+            pass
+            # touchscreen in layerview
+        if self.dial_view:
+            pass # touchscreen in layer
         
+        # set keys 
+        pass
             
 
     # -----------------
@@ -244,6 +255,7 @@ class BoundController:
                     self.deck.set_key_image(k['key_id'], k['icon_on'])
                 else:
                     self.deck.set_key_image(k['key_id'], k['icon'])
+                    #TODO how to incorporate on vs off state info
 
 
     def _update_touchscreen(self):
@@ -258,7 +270,44 @@ class BoundController:
     # -------------
     # Update Napari
     # -------------
+    def _key_change_callback(self, deck, key, state):
+        # Don't try to draw an image on a touch button
+        if key >= deck.key_count():
+            return
         
+        # SET IMAGE BASED ON TOGGLED ON OR OFF
+        # ------------------------------------
+        # Update the key image based on the new key state.
+        update_key_image(deck, key, state)
+
+        # FROM TEST EXAMPLE
+        # In test example got different emojis if pressed vs not
+        # here we want to toggle 
+        if state:
+            pass
+            key_style = get_key_style(deck, key, state)
+            # When an exit button is pressed, close the application.
+            if key_style["name"] == "exit":
+                # Use a scoped-with on the deck to ensure we're the only thread
+                # using it right now.
+                with deck:
+                    # Reset deck, clearing all button images.
+                    deck.reset()
+    
+                    # Close deck handle, terminating internal worker threads.
+                    deck.close()
+
+        # NAPARI CUSTOM ACTIONS
+        # ---------------------
+        # Rules for buttons each time button is set to 1, += 1 
+        pass
+
+
+
+    @ensure_main_thread(await_return=True)    
+    def _handle_key_push(self, key_value:int):
+        k = self._active_keys
+        self.deck.set_key_callback(self._key_change_callback)
 
 
     # ------------------
@@ -297,5 +346,14 @@ def page_divided_bindings_info(info, menu, self, n_per_page, name):
     info['page_bindings'] = menu_key_pages 
 
 
+def update_key_image(deck, key, image):
+    with deck:
+        # Update requested key with the generated image.
+        deck.set_key_image(key, image)
 
+
+def update_button_value(button_val, state):
+    button_val += state
+    button_val = button_val % 1
+    return button_val
 
